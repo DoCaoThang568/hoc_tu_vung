@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hoc_tu_vung/main.dart'; // Import để sử dụng ManHinhChinh.routeName
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -59,7 +60,7 @@ class _AuthScreenState extends State<AuthScreen> {
           print('Hardcoded Login Successful: Email: $email');
           if (mounted) {
             // Điều hướng đến màn hình chính sau khi đăng nhập thành công
-            Navigator.of(context).pushReplacementNamed('/main-app'); // Sử dụng routeName của ManHinhChinh
+            Navigator.of(context).pushReplacementNamed(ManHinhChinh.routeName);
           }
         } else {
           _showErrorDialog('Email hoặc mật khẩu không đúng (tài khoản test).');
@@ -197,7 +198,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           labelText: 'Mật khẩu',
                           hintText: 'Nhập mật khẩu của bạn',
                           prefixIcon: Icon(Icons.lock_outline, color: theme.colorScheme.primary),
-                          suffixIcon: IconButton( // Thêm suffixIcon
+                          suffixIcon: IconButton(
                             icon: Icon(
                               _isPasswordObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                               color: theme.colorScheme.primary,
@@ -214,7 +215,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           filled: true,
                           fillColor: theme.colorScheme.surface.withOpacity(0.5),
                         ),
-                        obscureText: _isPasswordObscured, // Sử dụng biến trạng thái
+                        obscureText: _isPasswordObscured, // Sử dụng biến state
                         style: GoogleFonts.poppins(),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty || value.length < 6) {
@@ -233,7 +234,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             labelText: 'Xác nhận mật khẩu',
                             hintText: 'Nhập lại mật khẩu của bạn',
                             prefixIcon: Icon(Icons.lock_outline, color: theme.colorScheme.primary),
-                            suffixIcon: IconButton( // Thêm suffixIcon
+                            suffixIcon: IconButton(
                               icon: Icon(
                                 _isConfirmPasswordObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                 color: theme.colorScheme.primary,
@@ -250,7 +251,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             filled: true,
                             fillColor: theme.colorScheme.surface.withOpacity(0.5),
                           ),
-                          obscureText: _isConfirmPasswordObscured, // Sử dụng biến trạng thái
+                          obscureText: _isConfirmPasswordObscured, // Sử dụng biến state
                           style: GoogleFonts.poppins(),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {

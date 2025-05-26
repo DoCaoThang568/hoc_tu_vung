@@ -265,9 +265,9 @@ class UngDungHocTuVung extends StatelessWidget {
         highlightColor: const Color(0xFF4E6AF3).withOpacity(0.1),
         scaffoldBackgroundColor: const Color(0xFFF8F9FD),
       ),
-      home: const AuthScreen(), // Thay đổi ở đây
+      initialRoute: AuthScreen.routeName, // Đặt AuthScreen làm màn hình đầu tiên
       routes: {
-        AuthScreen.routeName: (context) => const AuthScreen(), // Thêm route cho AuthScreen
+        AuthScreen.routeName: (context) => const AuthScreen(),
         ManHinhChinh.routeName: (context) => const ManHinhChinh(), // Thêm route cho ManHinhChinh
         '/flashcard': (context) => const FlashcardScreen(),
         '/quiz': (context) => const QuizScreen(),
@@ -285,7 +285,8 @@ class UngDungHocTuVung extends StatelessWidget {
 
 class ManHinhChinh extends StatefulWidget {
   const ManHinhChinh({super.key});
-  static const routeName = '/main-app'; // Thêm routeName cho ManHinhChinh
+
+  static const String routeName = '/home'; // Thêm routeName cho ManHinhChinh
 
   @override
   State<ManHinhChinh> createState() => _ManHinhChinhState();
