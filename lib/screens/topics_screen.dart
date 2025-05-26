@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'flashcard_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'learning_methods_screen.dart'; // Thêm import này
+import 'dart:math'; // Added for random selection
 
 class TopicsScreen extends StatefulWidget {
   const TopicsScreen({super.key});
@@ -89,6 +90,15 @@ class _TopicsScreenState extends State<TopicsScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _englishNameController = TextEditingController();
   
+  // Method to get random suggested topics
+  List<Map<String, dynamic>> _getSuggestedTopics() {
+    if (_topics.isEmpty) return [];
+    final random = Random();
+    // Shuffle the list and take up to 3 topics
+    final shuffledTopics = List<Map<String, dynamic>>.from(_topics)..shuffle(random);
+    return shuffledTopics.take(min(3, _topics.length)).toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -209,6 +219,137 @@ class _TopicsScreenState extends State<TopicsScreen> {
     );
   }
 
+  // Widget to build the suggested topics preview
+  Widget _buildSuggestedTopicsPreview(BuildContext context) {
+    final suggestedTopics = _getSuggestedTopics();
+    if (suggestedTopics.isEmpty) {
+      return const SizedBox.shrink(); // Return empty if no topics
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0, top: 24.0, bottom: 8.0), // Added more top padding
+          child: Text(
+            'Gợi ý cho bạn',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18, // Slightly smaller for a sub-header
+                ),
+          ),
+        ),
+        SizedBox( // Changed Container to SizedBox for fixed height
+          height: 190, // Adjusted height for cards
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            itemCount: suggestedTopics.length,
+            itemBuilder: (context, index) {
+              final topic = suggestedTopics[index];
+              return SizedBox(
+                width: 260, // Adjusted width for cards
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LearningMethodsScreen(topicData: topic),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Card(
+                      elevation: 3, // Slightly more elevation
+                      shadowColor: Colors.black.withOpacity(0.1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10), // Adjusted padding
+                                  decoration: BoxDecoration(
+                                    color: (topic['color'] as Color).withOpacity(0.1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    topic['icon'] as IconData,
+                                    color: topic['color'] as Color,
+                                    size: 22, // Adjusted icon size
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        topic['name'] as String,
+                                        style: const TextStyle(
+                                          fontSize: 15, // Adjusted font size
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        topic['english_name'] as String,
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 12,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '${topic['word_count']} từ vựng', // Added "vựng"
+                               style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                            ),
+                            const SizedBox(height: 8),
+                            LinearProgressIndicator(
+                              value: topic['progress'] as double,
+                              backgroundColor: (topic['color'] as Color).withOpacity(0.2), // Softer background
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                topic['color'] as Color,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                              minHeight: 6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -255,20 +396,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
           ),
           centerTitle: false,
         ),
-        floatingActionButton: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                blurRadius: 10,
-                spreadRadius: 1,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: FloatingActionButton(
+        floatingActionButton: FloatingActionButton(
             onPressed: _showAddTopicDialog,
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
@@ -280,11 +408,11 @@ class _TopicsScreenState extends State<TopicsScreen> {
               size: 28,
             ),
           ),
-        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildSuggestedTopicsPreview(context), // Added suggested topics preview
             // Phần hướng dẫn và tìm kiếm
             Padding(
               padding: const EdgeInsets.all(16.0),

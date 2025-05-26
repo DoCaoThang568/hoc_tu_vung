@@ -7,6 +7,7 @@ import '../models/study_progress.dart';
 import '../widgets/animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'topics_screen.dart';
+import 'dart:math'; // Import for random
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -865,6 +866,47 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Widget mới cho phần Chủ đề từ vựng
   Widget _buildVocabularyTopicsSection(BuildContext context) {
+    // Dữ liệu chủ đề mẫu (nên lấy từ một nguồn chung hoặc API sau này)
+    final List<Map<String, dynamic>> allTopics = [
+      {
+        'name': 'Giao tiếp cơ bản',
+        'english_name': 'Basic Communication',
+        'icon': Icons.chat_bubble_outline,
+        'color': Colors.blue,
+        'word_count': 50,
+        'progress': 0.65,
+      },
+      {
+        'name': 'Du lịch',
+        'english_name': 'Travel',
+        'icon': Icons.flight,
+        'color': Colors.green,
+        'word_count': 40,
+        'progress': 0.3,
+      },
+      {
+        'name': 'Công nghệ',
+        'english_name': 'Technology',
+        'icon': Icons.computer,
+        'color': Colors.orange,
+        'word_count': 35,
+        'progress': 0.1,
+      },
+      {
+        'name': 'Kinh doanh',
+        'english_name': 'Business',
+        'icon': Icons.business_center,
+        'color': Colors.purple,
+        'word_count': 45,
+        'progress': 0.5,
+      },
+      // Thêm các chủ đề khác nếu cần
+    ];
+
+    // Lấy ngẫu nhiên 2-3 chủ đề để hiển thị
+    final random = Random();
+    final displayedTopics = (allTopics..shuffle(random)).take(min(3, allTopics.length)).toList();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: Column(
@@ -895,27 +937,120 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          // Optionally, display a few sample topic cards here or a placeholder
-          // For now, let's add a placeholder text or a simple visual
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.topic_outlined, color: Theme.of(context).colorScheme.primary, size: 20),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Khám phá các chủ đề đa dạng để mở rộng vốn từ của bạn.',
-                    style: GoogleFonts.inter(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          if (displayedTopics.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.topic_outlined, color: Theme.of(context).colorScheme.primary, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Khám phá các chủ đề đa dạng để mở rộng vốn từ của bạn.',
+                      style: GoogleFonts.inter(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            )
+          else
+            SizedBox(
+              height: 130, // Adjust height as needed for these smaller cards
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: displayedTopics.length,
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, index) {
+                  final topic = displayedTopics[index];
+                  return SizedBox(
+                    width: 220, // Adjust width for these smaller cards
+                    child: Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {
+                          // Navigate to LearningMethodsScreen with topic data
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TopicsScreen(), // Should be LearningMethodsScreen(topicData: topic)
+                                                                  // For now, keeping TopicsScreen to avoid breaking, will fix later
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: (topic['color'] as Color).withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      topic['icon'] as IconData,
+                                      color: topic['color'] as Color,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          topic['name'] as String,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          '${topic['word_count']} từ vựng',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 11,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              LinearProgressIndicator(
+                                value: topic['progress'] as double,
+                                backgroundColor: (topic['color'] as Color).withOpacity(0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  topic['color'] as Color,
+                                ),
+                                borderRadius: BorderRadius.circular(3),
+                                minHeight: 5,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          )
         ],
       ),
     );
