@@ -89,8 +89,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               
               const SizedBox(height: 24),
+
+              // Các hành động chính
+              SlideAnimation(
+                delay: const Duration(milliseconds: 375),
+                child: _buildMainActionButtons(context),
+              ),
+              const SizedBox(height: 24),
               
-              // Gợi ý chủ đề
+              // Gợi ý chủ đề (đã đổi tên thành Các chế độ học)
               SlideAnimation(
                 delay: const Duration(milliseconds: 450),
                 child: _buildSuggestedTopics(context),
@@ -333,7 +340,8 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, '/flashcard');
+                // Navigator.pushNamed(context, '/flashcard'); // OLD
+                Navigator.pushNamed(context, '/topics'); // NEW: Navigate to TopicsScreen
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -344,9 +352,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              icon: const Icon(Icons.play_arrow_rounded, size: 20),
+              icon: const Icon(Icons.school_outlined, size: 20), // Changed Icon
               label: Text(
-                'Học ngay hôm nay',
+                'Học bài mới', // CHANGED TEXT
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -565,6 +573,86 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMainActionButtons(BuildContext context) {
+    final buttonStyle = ElevatedButton.styleFrom(
+      // backgroundColor: Theme.of(context).colorScheme.surface,
+      // foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        // side: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.5))
+      ),
+      elevation: 1,
+      textStyle: GoogleFonts.inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Luyện tập & Ôn tập',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        GridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 2.8, // Adjust as needed
+          children: [
+            ElevatedButton.icon(
+              icon: Icon(Icons.replay_outlined, color: Theme.of(context).colorScheme.secondary),
+              label: const Text('Ôn bài cũ'),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tính năng "Ôn bài cũ" đang được phát triển.')),
+                );
+              },
+              style: buttonStyle,
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.error_outline, color: Colors.redAccent),
+              label: const Text('Xem lỗi sai'),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tính năng "Xem lại lỗi sai" đang được phát triển.')),
+                );
+              },
+              style: buttonStyle,
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.fitness_center_outlined, color: Colors.green),
+              label: const Text('Luyện tập'),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tính năng "Luyện tập tổng hợp" đang được phát triển.')),
+                );
+              },
+              style: buttonStyle,
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.assessment_outlined, color: Colors.orangeAccent),
+              label: const Text('Kiểm tra'),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tính năng "Kiểm tra" đang được phát triển.')),
+                );
+              },
+              style: buttonStyle,
+            ),
+          ],
         ),
       ],
     );
