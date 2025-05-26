@@ -3,9 +3,9 @@ import '../models/pronunciation_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class FlashcardScreen extends StatefulWidget {
-  final String? selectedTopic;
+  final Map<String, dynamic>? topicData;
 
-  const FlashcardScreen({super.key, this.selectedTopic});
+  const FlashcardScreen({super.key, this.topicData});
 
   @override
   State<FlashcardScreen> createState() => _FlashcardScreenState();
@@ -113,8 +113,12 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
   void initState() {
     super.initState();
     
-    // Khởi tạo chủ đề từ tham số nếu có
-    _selectedTopic = widget.selectedTopic ?? 'Tất cả';
+    // Khởi tạo chủ đề từ topicData nếu có, nếu không thì dùng giá trị mặc định
+    if (widget.topicData != null && widget.topicData!['name'] != null) {
+      _selectedTopic = widget.topicData!['name'] as String;
+    } else {
+      _selectedTopic = 'Tất cả'; // Giá trị mặc định nếu không có topicData
+    }
     
     // Khởi tạo animation lật thẻ
     _flipController = AnimationController(
@@ -269,6 +273,10 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
   // Build màn hình chính
   @override
   Widget build(BuildContext context) {
+    final String appBarTitle = widget.topicData != null 
+        ? 'Flashcards: ${widget.topicData!['name'] ?? 'Chung'}' 
+        : 'Flashcards: Tất cả';
+
     // Khi đang thêm từ mới
     if (_isAddingNewWord) {
       return _buildAddNewWordForm();
@@ -276,13 +284,18 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
     
     return Scaffold(
       appBar: AppBar(
-        title: Text('Học thẻ từ vựng'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        title: Text(appBarTitle),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                _filterFlashcards();
+              });
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -1102,4 +1115,4 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
       ),
     );
   }
-} 
+}

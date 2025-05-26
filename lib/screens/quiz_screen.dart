@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({super.key});
+  final Map<String, dynamic>? topicData;
+
+  const QuizScreen({super.key, this.topicData});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -15,7 +17,7 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isAnswerChecked = false;
   
   // Danh sách câu hỏi mẫu
-  final List<Map<String, dynamic>> _questions = [
+  List<Map<String, dynamic>> _allQuestions = [
     {
       'question': 'What is the meaning of "Congratulations"?',
       'options': ['Chúc mừng', 'Xin lỗi', 'Cảm ơn', 'Tạm biệt'],
@@ -108,6 +110,8 @@ class _QuizScreenState extends State<QuizScreen> {
     },
   ];
 
+  List<Map<String, dynamic>> _filteredQuestions = []; // NEW: For questions filtered by topic
+
   // Theo dõi câu trả lời sai
   final List<Map<String, dynamic>> _wrongAnswers = [];
 
@@ -116,21 +120,21 @@ class _QuizScreenState extends State<QuizScreen> {
     
     setState(() {
       _isAnswerChecked = true;
-      if (_selectedAnswer == _questions[_currentQuestion]['correct_answer']) {
+      if (_selectedAnswer == _filteredQuestions[_currentQuestion]['correct_answer']) {
         _correctAnswers++;
       } else {
         // Thêm câu hỏi sai vào danh sách
         _wrongAnswers.add({
-          'question': _questions[_currentQuestion]['question'],
+          'question': _filteredQuestions[_currentQuestion]['question'],
           'user_answer': _selectedAnswer,
-          'correct_answer': _questions[_currentQuestion]['correct_answer'],
+          'correct_answer': _filteredQuestions[_currentQuestion]['correct_answer'],
         });
       }
     });
   }
 
   void _nextQuestion() {
-    if (_currentQuestion < _questions.length - 1) {
+    if (_currentQuestion < _filteredQuestions.length - 1) {
       setState(() {
         _currentQuestion++;
         _selectedAnswer = null;
@@ -151,14 +155,47 @@ class _QuizScreenState extends State<QuizScreen> {
       _selectedAnswer = null;
       _isAnswerChecked = false;
       _wrongAnswers.clear(); // Xóa danh sách câu trả lời sai
+      _filterQuestions(); // Lọc lại câu hỏi khi restart
     });
   }
 
   @override
+  void initState() { // NEW: initState to filter questions
+    super.initState();
+    _filterQuestions();
+  }
+
+  void _filterQuestions() { // NEW: Method to filter questions based on topicData
+    if (widget.topicData != null && widget.topicData!['name'] != null) {
+      final String topicName = widget.topicData!['name'] as String;
+      _filteredQuestions = _allQuestions.where((q) => q['topic'] == topicName).toList();
+      if (_filteredQuestions.isEmpty) {
+        // Nếu không có câu hỏi cho chủ đề này, lấy tất cả câu hỏi làm fallback
+        // Hoặc bạn có thể hiển thị thông báo "Không có câu hỏi cho chủ đề này"
+        _filteredQuestions = List.from(_allQuestions);
+      }
+    } else {
+      _filteredQuestions = List.from(_allQuestions); // Mặc định lấy tất cả nếu không có topicData
+    }
+    // Đảm bảo _currentQuestion không vượt quá giới hạn sau khi lọc
+    if (_currentQuestion >= _filteredQuestions.length && _filteredQuestions.isNotEmpty) {
+      _currentQuestion = _filteredQuestions.length - 1;
+    }
+     if (_filteredQuestions.isEmpty) {
+      _currentQuestion = 0; // Hoặc -1 để chỉ không có câu hỏi
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    final String appBarTitle = widget.topicData != null 
+        ? 'Quiz: ${widget.topicData!['name'] ?? 'Chung'}' 
+        : 'Quiz: Tổng hợp';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kiểm tra từ vựng'),
+        title: Text(appBarTitle),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -176,7 +213,31 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildQuizScreen() {
-    final currentQ = _questions[_currentQuestion];
+    if (_filteredQuestions.isEmpty) { // NEW: Handle case with no questions
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.quiz_outlined, size: 80, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text(
+              widget.topicData != null 
+                ? 'Không có câu hỏi cho chủ đề "${widget.topicData!['name']}"' 
+                : 'Không có câu hỏi nào được tải.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.arrow_back_ios_new),
+              label: const Text('Quay lại'),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        ),
+      );
+    }
+    final currentQ = _filteredQuestions[_currentQuestion];
     
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -188,7 +249,7 @@ class _QuizScreenState extends State<QuizScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LinearProgressIndicator(
-                value: (_currentQuestion + 1) / _questions.length,
+                value: (_currentQuestion + 1) / _filteredQuestions.length, // Use _filteredQuestions
                 backgroundColor: Colors.grey[200],
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).colorScheme.primary,
@@ -201,7 +262,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Câu hỏi ${_currentQuestion + 1}/${_questions.length}',
+                    'Câu hỏi ${_currentQuestion + 1}/${_filteredQuestions.length}', // Use _filteredQuestions
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -391,7 +452,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                     ),
                     child: Text(
-                      _currentQuestion < _questions.length - 1
+                      _currentQuestion < _filteredQuestions.length - 1
                           ? 'Câu tiếp theo'
                           : 'Xem kết quả',
                       style: const TextStyle(fontSize: 16),
@@ -405,8 +466,24 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildResultScreen() {
-    final score = (_correctAnswers / _questions.length * 100).toInt();
-    
+    final double percentage = _filteredQuestions.isNotEmpty ? (_correctAnswers / _filteredQuestions.length) * 100 : 0; // Use _filteredQuestions
+    String resultMessage;
+    Color resultColor;
+
+    if (percentage >= 80) {
+      resultMessage = 'Xuất sắc! Bạn đã nắm vững từ vựng.';
+      resultColor = Colors.green;
+    } else if (percentage >= 60) {
+      resultMessage = 'Tốt! Tiếp tục cố gắng nhé.';
+      resultColor = Colors.orange;
+    } else if (percentage >= 40) {
+      resultMessage = 'Cần cố gắng hơn nữa!';
+      resultColor = Colors.red;
+    } else {
+      resultMessage = 'Hãy ôn tập lại từ vựng nhé!';
+      resultColor = Colors.red;
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -440,25 +517,25 @@ class _QuizScreenState extends State<QuizScreen> {
                           height: 150,
                           width: 150,
                           child: CircularProgressIndicator(
-                            value: score / 100,
+                            value: percentage / 100,
                             strokeWidth: 12,
                             backgroundColor: Colors.grey[200],
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              _getScoreColor(score),
+                              resultColor,
                             ),
                           ),
                         ),
                         Column(
                           children: [
                             Text(
-                              '$score%',
+                              '${percentage.toStringAsFixed(0)}%',
                               style: const TextStyle(
                                 fontSize: 36,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              '$_correctAnswers/${_questions.length} đúng',
+                              '$_correctAnswers/${_filteredQuestions.length} đúng',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey[600],
@@ -471,7 +548,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     
                     const SizedBox(height: 24),
                     Text(
-                      _getScoreMessage(score),
+                      resultMessage,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -665,7 +742,7 @@ class _QuizScreenState extends State<QuizScreen> {
     Map<String, Map<String, int>> stats = {};
     
     // Khởi tạo thống kê cho mỗi chủ đề
-    for (var question in _questions) {
+    for (var question in _filteredQuestions) {
       final topic = question['topic'];
       if (!stats.containsKey(topic)) {
         stats[topic] = {'total': 0, 'correct': 0};
@@ -674,8 +751,8 @@ class _QuizScreenState extends State<QuizScreen> {
     }
     
     // Tính số câu đúng cho mỗi chủ đề
-    for (int i = 0; i < _questions.length; i++) {
-      final question = _questions[i];
+    for (int i = 0; i < _filteredQuestions.length; i++) {
+      final question = _filteredQuestions[i];
       final topic = question['topic'];
       
       if (_wrongAnswers.any((wrong) => wrong['question'] == question['question'])) {
@@ -751,4 +828,4 @@ class _QuizScreenState extends State<QuizScreen> {
     if (percentage >= 60) return Colors.orange;
     return Colors.red;
   }
-} 
+}

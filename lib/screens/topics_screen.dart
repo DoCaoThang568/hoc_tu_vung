@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'flashcard_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'learning_methods_screen.dart'; // Thêm import này
 
 class TopicsScreen extends StatefulWidget {
   const TopicsScreen({super.key});
@@ -421,11 +422,11 @@ class _TopicsScreenState extends State<TopicsScreen> {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: InkWell(
                             onTap: () {
-                              // Chuyển đến màn hình flashcard với chủ đề được chọn
+                              // Chuyển đến màn hình chọn phương pháp học với chủ đề được chọn
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FlashcardScreen(),
+                                  builder: (context) => LearningMethodsScreen(topicData: topic),
                                 ),
                               );
                             },
@@ -555,4 +556,4 @@ class _TopicsScreenState extends State<TopicsScreen> {
       ),
     );
   }
-} 
+}
