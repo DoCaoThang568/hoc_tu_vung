@@ -1,0 +1,18 @@
+# Danh sách nguồn phát âm mẫu
+# Bạn có thể tải về các tệp âm thanh MP3 và lưu vào thư mục "assets/audio"
+# với tên tệp tương ứng với từ vựng (viết thường, thay khoảng trắng bằng dấu gạch dưới)
+
+# Ví dụ:
+# congratulations.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/congratulations--_us_1.mp3
+# appreciate.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/appreciate--_us_1.mp3
+# convenient.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/convenient--_us_1.mp3
+# enthusiasm.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/enthusiasm--_us_1.mp3
+# profound.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/profound--_us_1.mp3
+# destination.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/destination--_us_1.mp3
+# accommodation.mp3: https://ssl.gstatic.com/dictionary/static/sounds/oxford/accommodation--_us_1.mp3
+
+# Bạn cũng có thể sử dụng dịch vụ phát âm của Google bằng URL:
+# https://translate.google.com/translate_tts?ie=UTF-8&q=YOUR_WORD&tl=en&client=tw-ob
+
+# Hoặc sử dụng API Forvo:
+# https://forvo.com/word/congratulations/#en 
