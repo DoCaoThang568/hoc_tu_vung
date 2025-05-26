@@ -8,6 +8,7 @@ import '../widgets/animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'topics_screen.dart';
 import 'dart:math'; // Import for random
+import 'learning_methods_screen.dart'; // Added import
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -981,8 +982,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => TopicsScreen(), // Should be LearningMethodsScreen(topicData: topic)
-                                                                  // For now, keeping TopicsScreen to avoid breaking, will fix later
+                              builder: (context) => LearningMethodsScreen(topicData: topic),
                             ),
                           );
                         },

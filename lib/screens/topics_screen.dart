@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'flashcard_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'learning_methods_screen.dart'; // Thêm import này
-import 'dart:math'; // Added for random selection
+import 'learning_methods_screen.dart';
+import 'dart:math'; // For random selection
 
 class TopicsScreen extends StatefulWidget {
   const TopicsScreen({super.key});
@@ -15,6 +14,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
   // Danh sách chủ đề mẫu
   final List<Map<String, dynamic>> _topics = [
     {
+      'id': 'basic_communication', // Ensure ID is present and correct
       'name': 'Giao tiếp cơ bản',
       'english_name': 'Basic Communication',
       'icon': Icons.chat_bubble_outline,
@@ -23,6 +23,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
       'progress': 0.65,
     },
     {
+      'id': 'travel', // Ensure ID is present and correct
       'name': 'Du lịch',
       'english_name': 'Travel',
       'icon': Icons.flight,
@@ -31,22 +32,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
       'progress': 0.3,
     },
     {
-      'name': 'Công nghệ',
-      'english_name': 'Technology',
-      'icon': Icons.computer,
-      'color': Colors.orange,
-      'word_count': 35,
-      'progress': 0.1,
-    },
-    {
-      'name': 'Kinh doanh',
-      'english_name': 'Business',
-      'icon': Icons.business_center,
-      'color': Colors.purple,
-      'word_count': 45,
-      'progress': 0.5,
-    },
-    {
+      'id': 'food', // Corrected ID to match sampleSentences in InteractiveLessonScreen
       'name': 'Thức ăn & Đồ uống',
       'english_name': 'Food & Drinks',
       'icon': Icons.restaurant_menu,
@@ -55,6 +41,25 @@ class _TopicsScreenState extends State<TopicsScreen> {
       'progress': 0.8,
     },
     {
+      'id': 'technology', // Added ID
+      'name': 'Công nghệ',
+      'english_name': 'Technology',
+      'icon': Icons.computer,
+      'color': Colors.orange,
+      'word_count': 35,
+      'progress': 0.1,
+    },
+    {
+      'id': 'business', // Added ID
+      'name': 'Kinh doanh',
+      'english_name': 'Business',
+      'icon': Icons.business_center,
+      'color': Colors.purple,
+      'word_count': 45,
+      'progress': 0.5,
+    },
+    {
+      'id': 'education', // Added ID
       'name': 'Giáo dục',
       'english_name': 'Education',
       'icon': Icons.school,
@@ -63,6 +68,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
       'progress': 0.4,
     },
     {
+      'id': 'health_medical', // Added ID
       'name': 'Y tế & Sức khỏe',
       'english_name': 'Health & Medical',
       'icon': Icons.medical_services,
@@ -71,6 +77,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
       'progress': 0.2,
     },
     {
+      'id': 'sports', // Added ID
       'name': 'Thể thao',
       'english_name': 'Sports',
       'icon': Icons.sports_basketball,
@@ -141,10 +148,6 @@ class _TopicsScreenState extends State<TopicsScreen> {
     // Reset các controller
     _nameController.text = '';
     _englishNameController.text = '';
-    
-    // Màu sắc và biểu tượng mặc định
-    Color selectedColor = Colors.blue;
-    IconData selectedIcon = Icons.chat_bubble_outline;
    
     showDialog(
       context: context,
@@ -189,10 +192,11 @@ class _TopicsScreenState extends State<TopicsScreen> {
                 if (_nameController.text.isNotEmpty && _englishNameController.text.isNotEmpty) {
                   setState(() {
                     _topics.add({
+                      'id': DateTime.now().toString(), // Unique ID
                       'name': _nameController.text,
                       'english_name': _englishNameController.text,
-                      'icon': selectedIcon,
-                      'color': selectedColor,
+                      'icon': Icons.topic, // Default icon, can be changed later
+                      'color': Colors.primaries[Random().nextInt(Colors.primaries.length)], // Random color
                       'word_count': 0, // Bắt đầu với 0 từ
                       'progress': 0.0, // Tiến độ 0%
                     });
@@ -550,6 +554,8 @@ class _TopicsScreenState extends State<TopicsScreen> {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: InkWell(
                             onTap: () {
+                              // In ra topicData để kiểm tra
+                              // print('Topic selected in TopicsScreen: $topic'); 
                               // Chuyển đến màn hình chọn phương pháp học với chủ đề được chọn
                               Navigator.push(
                                 context,

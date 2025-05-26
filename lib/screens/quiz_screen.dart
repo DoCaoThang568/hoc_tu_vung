@@ -17,7 +17,7 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isAnswerChecked = false;
   
   // Danh sách câu hỏi mẫu
-  List<Map<String, dynamic>> _allQuestions = [
+  final List<Map<String, dynamic>> _allQuestions = [
     {
       'question': 'What is the meaning of "Congratulations"?',
       'options': ['Chúc mừng', 'Xin lỗi', 'Cảm ơn', 'Tạm biệt'],
@@ -722,19 +722,6 @@ class _QuizScreenState extends State<QuizScreen> {
         ),
       ),
     );
-  }
-
-  Color _getScoreColor(int score) {
-    if (score >= 80) return Colors.green;
-    if (score >= 60) return Colors.orange;
-    return Colors.red;
-  }
-
-  String _getScoreMessage(int score) {
-    if (score >= 80) return 'Xuất sắc! Bạn đã nắm vững từ vựng.';
-    if (score >= 60) return 'Tốt! Tiếp tục cố gắng nhé.';
-    if (score >= 40) return 'Cần cố gắng hơn nữa!';
-    return 'Hãy ôn tập lại từ vựng nhé!';
   }
 
   // Tính thống kê theo chủ đề

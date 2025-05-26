@@ -11,6 +11,7 @@ import 'screens/history_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/auth_screen.dart';
 import 'screens/learning_methods_screen.dart'; // Thêm import này
+import 'screens/interactive_lesson_screen.dart'; // Thêm import cho màn hình mới
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -269,8 +270,9 @@ class UngDungHocTuVung extends StatelessWidget {
       initialRoute: AuthScreen.routeName, // Đặt AuthScreen làm màn hình đầu tiên
       routes: {
         AuthScreen.routeName: (context) => const AuthScreen(),
-        ManHinhChinh.routeName: (context) => const ManHinhChinh(), // Thêm route cho ManHinhChinh
-        LearningMethodsScreen.routeName: (context) => LearningMethodsScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>), // Thêm route này
+        ManHinhChinh.routeName: (context) => const ManHinhChinh(), 
+        LearningMethodsScreen.routeName: (context) => LearningMethodsScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
+        InteractiveLessonScreen.routeName: (context) => InteractiveLessonScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>), // Thêm route này
         '/flashcard': (context) => const FlashcardScreen(),
         '/quiz': (context) => const QuizScreen(),
         '/image_quiz': (context) => const ImageQuizScreen(),
@@ -347,10 +349,6 @@ class _ManHinhChinhState extends State<ManHinhChinh> with SingleTickerProviderSt
     final TextEditingController nameController = TextEditingController();
     final TextEditingController englishNameController = TextEditingController();
     
-    // Màu sắc và biểu tượng mặc định
-    Color selectedColor = Colors.blue;
-    IconData selectedIcon = Icons.chat_bubble_outline;
-   
     showDialog(
       context: context,
       barrierDismissible: true,

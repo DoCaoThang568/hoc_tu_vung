@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'flashcard_screen.dart'; // Sẽ cần cho điều hướng
-import 'quiz_screen.dart'; // Sẽ cần cho điều hướng
-// import 'traditional_learning_screen.dart'; // Màn hình học kiểu truyền thống (sẽ tạo sau)
+import 'flashcard_screen.dart'; 
+import 'quiz_screen.dart'; 
+import 'interactive_lesson_screen.dart'; // Import màn hình mới
 
 class LearningMethodsScreen extends StatelessWidget {
   final Map<String, dynamic> topicData;
@@ -108,20 +108,15 @@ class LearningMethodsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildLearningMethodButton(
                 context: context,
-                title: 'Học kiểu truyền thống',
-                subtitle: 'Luyện tập đa dạng như Duolingo',
-                icon: Icons.school_outlined,
-                color: Colors.green,
+                title: 'Bài học tương tác', // Đã đổi tên ở đây
+                subtitle: 'Tham gia các bài tập đa dạng',
+                icon: Icons.widgets_outlined, // Thay icon nếu muốn
+                color: Colors.teal, // Thay màu nếu muốn
                 onTap: () {
-                  // TODO: Điều hướng đến TraditionalLearningScreen (sẽ tạo sau)
-                  // Navigator.of(context).pushReplacementNamed(TraditionalLearningScreen.routeName, arguments: topicData);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Tính năng "Học kiểu truyền thống" cho chủ đề \$topicName đang được phát triển.', style: GoogleFonts.poppins()),
-                      backgroundColor: Colors.blueGrey,
-                    ),
+                  Navigator.of(context).pushReplacementNamed(
+                    InteractiveLessonScreen.routeName,
+                    arguments: topicData, // Truyền toàn bộ topicData
                   );
-                  print('Chuyển đến Học truyền thống với chủ đề: \$topicName');
                 },
               ),
             ],
