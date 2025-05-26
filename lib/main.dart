@@ -269,6 +269,7 @@ class UngDungHocTuVung extends StatelessWidget {
       initialRoute: AuthScreen.routeName, // Đặt AuthScreen làm màn hình đầu tiên
       routes: {
         AuthScreen.routeName: (context) => const AuthScreen(),
+        ManHinhChinh.routeName: (context) => const ManHinhChinh(), // Thêm route cho ManHinhChinh
         LearningMethodsScreen.routeName: (context) => LearningMethodsScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>), // Thêm route này
         '/flashcard': (context) => const FlashcardScreen(),
         '/quiz': (context) => const QuizScreen(),

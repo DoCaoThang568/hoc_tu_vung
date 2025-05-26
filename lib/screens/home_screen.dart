@@ -102,6 +102,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 delay: const Duration(milliseconds: 450),
                 child: _buildSuggestedTopics(context),
               ),
+              const SizedBox(height: 24), // Add spacing before the new section
+
+              // Phần Chủ đề từ vựng
+              SlideAnimation(
+                delay: const Duration(milliseconds: 525), // Adjust delay as needed
+                child: _buildVocabularyTopicsSection(context),
+              ),
             ],
           ),
         ),
@@ -666,23 +673,15 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Các chế độ học',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            // Remove Row with "Xem tất cả" button
+            child: Text(
+              'Các chế độ học', // Only title remains
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                TextButton(
-                  onPressed: () => _navigateToTopics(context),
-                  child: const Text('Xem tất cả', style: TextStyle(fontSize: 12)),
-                ),
-              ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 12), // Adjusted spacing
           GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -860,6 +859,64 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => TopicsScreen(),
+      ),
+    );
+  }
+
+  // Widget mới cho phần Chủ đề từ vựng
+  Widget _buildVocabularyTopicsSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Chủ đề từ vựng',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                TextButton(
+                  onPressed: () => _navigateToTopics(context),
+                  child: Text(
+                    'Xem tất cả',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Optionally, display a few sample topic cards here or a placeholder
+          // For now, let's add a placeholder text or a simple visual
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.topic_outlined, color: Theme.of(context).colorScheme.primary, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Khám phá các chủ đề đa dạng để mở rộng vốn từ của bạn.',
+                    style: GoogleFonts.inter(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
