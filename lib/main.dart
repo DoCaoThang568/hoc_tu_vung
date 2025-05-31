@@ -12,6 +12,7 @@ import 'screens/settings_screen.dart';
 import 'screens/auth_screen.dart';
 import 'screens/learning_methods_screen.dart'; // Thêm import này
 import 'screens/interactive_lesson_screen.dart'; // Thêm import cho màn hình mới
+import 'screens/lessons_screen.dart'; // Import lessons screen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -273,6 +274,7 @@ class UngDungHocTuVung extends StatelessWidget {
         ManHinhChinh.routeName: (context) => const ManHinhChinh(), 
         LearningMethodsScreen.routeName: (context) => LearningMethodsScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
         InteractiveLessonScreen.routeName: (context) => InteractiveLessonScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>), // Thêm route này
+        LessonsScreen.routeName: (context) => LessonsScreen(topicData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>), // Lessons route
         '/flashcard': (context) => const FlashcardScreen(),
         '/quiz': (context) => const QuizScreen(),
         '/image_quiz': (context) => const ImageQuizScreen(),

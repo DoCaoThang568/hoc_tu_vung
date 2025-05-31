@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'topics_screen.dart';
 import 'dart:math'; // Import for random
 import 'learning_methods_screen.dart'; // Added import
+import 'api_test_screen.dart'; // API test screen
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -619,7 +620,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: 2.8, // Adjust as needed
+          childAspectRatio: 2.4, // Adjusted for more buttons
           children: [
             ElevatedButton.icon(
               icon: Icon(Icons.replay_outlined, color: Theme.of(context).colorScheme.secondary),
@@ -657,6 +658,20 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Tính năng "Kiểm tra" đang được phát triển.')),
+                );
+              },
+              style: buttonStyle,
+            ),
+            // API Test Button (Development only)
+            ElevatedButton.icon(
+              icon: Icon(Icons.api, color: Colors.blue),
+              label: const Text('API Test'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ApiTestScreen(),
+                  ),
                 );
               },
               style: buttonStyle,
@@ -942,7 +957,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(

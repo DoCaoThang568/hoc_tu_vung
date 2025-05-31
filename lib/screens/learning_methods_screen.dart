@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'flashcard_screen.dart'; 
 import 'quiz_screen.dart'; 
 import 'interactive_lesson_screen.dart'; // Import màn hình mới
+import 'lessons_screen.dart'; // Import lessons screen
 
 class LearningMethodsScreen extends StatelessWidget {
   final Map<String, dynamic> topicData;
@@ -72,6 +73,24 @@ class LearningMethodsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              
+              // New Lessons option
+              _buildLearningMethodButton(
+                context: context,
+                title: 'Học theo bài',
+                subtitle: 'Học từ vựng và làm bài tập theo cấu trúc bài học',
+                icon: Icons.book_outlined,
+                color: Colors.blue,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => LessonsScreen(topicData: topicData),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              
               _buildLearningMethodButton(
                 context: context,
                 title: 'Học bằng Flashcard',
@@ -85,7 +104,7 @@ class LearningMethodsScreen extends StatelessWidget {
                       builder: (ctx) => FlashcardScreen(topicData: topicData), // Giả sử FlashcardScreen chấp nhận topicData
                     ),
                   );
-                  print('Chuyển đến Flashcard với chủ đề: \$topicName');
+                  print('Chuyển đến Flashcard với chủ đề: $topicName');
                 },
               ),
               const SizedBox(height: 16),
@@ -102,7 +121,7 @@ class LearningMethodsScreen extends StatelessWidget {
                       builder: (ctx) => QuizScreen(topicData: topicData), // Giả sử QuizScreen chấp nhận topicData
                     ),
                   );
-                  print('Chuyển đến Quiz với chủ đề: \$topicName');
+                  print('Chuyển đến Quiz với chủ đề: $topicName');
                 },
               ),
               const SizedBox(height: 16),

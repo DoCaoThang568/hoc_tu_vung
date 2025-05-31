@@ -18,7 +18,7 @@ class _InteractiveLessonScreenState extends State<InteractiveLessonScreen> {
   late List<Word> _allWords;
   late List<Exercise> _exercises;
   int _currentExerciseIndex = 0;
-  Map<String, dynamic> _userAnswers = {}; // To store user's answer for each exercise
+  final Map<String, dynamic> _userAnswers = {}; // To store user's answer for each exercise
   bool _showResults = false;
   List<String> _currentUnscrambledWords = [];
   List<String> _selectedWords = [];
@@ -293,7 +293,7 @@ class _InteractiveLessonScreenState extends State<InteractiveLessonScreen> {
               child: Text(option, style: GoogleFonts.poppins(fontSize: 16)),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
